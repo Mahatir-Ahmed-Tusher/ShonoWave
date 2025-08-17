@@ -3,7 +3,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
-import logoImage from "@assets/generated_images/ShonoWave_radio_app_logo_fd5b9b14.png";
+const logoImage = "/shonowave-logo.png";
 
 export function AppHeader() {
   const { toast } = useToast();
@@ -54,11 +54,19 @@ export function AppHeader() {
     <header className="sticky top-0 z-40 glass dark:glass-dark backdrop-blur-xl border-b border-white/20 dark:border-white/10 shadow-lg">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-4 hover:scale-105 transition-transform duration-200 group" data-testid="link-logo-home">
-          <div className="relative w-12 h-12 rounded-xl overflow-hidden shadow-lg group-hover:shadow-sw-primary/25 transition-all duration-200">
+          <div className="relative w-12 h-12">
             <img 
               src={logoImage} 
               alt="ShonoWave Logo" 
               className="w-full h-full object-contain"
+              onError={(e) => {
+                console.error('Logo failed to load:', logoImage);
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+              }}
+              onLoad={() => {
+                console.log('Logo loaded successfully:', logoImage);
+              }}
             />
           </div>
           <div className="flex flex-col">

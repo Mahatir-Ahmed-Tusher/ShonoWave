@@ -10,17 +10,12 @@ interface AudioContextType {
   volume: number;
   isMuted: boolean;
   error: string | null;
-  isRecording: boolean;
-  recordedChunks: Blob[];
   playStation: (station: Station) => void;
   pauseStation: () => void;
   togglePlayPause: () => void;
   setVolume: (volume: number) => void;
   toggleMute: () => void;
   retry: () => void;
-  startRecording: () => Promise<void>;
-  stopRecording: () => void;
-  downloadRecording: () => void;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -32,10 +27,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const [volume, setVolumeState] = useState(75);
   const [isMuted, setIsMuted] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isRecording, setIsRecording] = useState(false);
-  const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
 
@@ -293,90 +285,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     }
   }, [currentStation, playStation]);
 
-  // Recording functions
-  const startRecording = useCallback(async () => {
-    if (!audioRef.current || !isPlaying || isRecording) return;
 
-    try {
-      // Create a stream from the audio element for recording
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const source = audioContext.createMediaElementSource(audioRef.current);
-      const destination = audioContext.createMediaStreamDestination();
-      source.connect(destination);
-      source.connect(audioContext.destination); // Keep playing through speakers
-
-      const stream = destination.stream;
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'audio/webm;codecs=opus'
-      });
-
-      mediaRecorderRef.current = mediaRecorder;
-      const chunks: Blob[] = [];
-
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          chunks.push(event.data);
-        }
-      };
-
-      mediaRecorder.onstop = () => {
-        setRecordedChunks(chunks);
-        setIsRecording(false);
-      };
-
-      mediaRecorder.start();
-      setIsRecording(true);
-      setRecordedChunks([]);
-
-      toast({
-        title: "Recording Started",
-        description: `Recording ${currentStation?.name || 'radio stream'}`,
-      });
-    } catch (error) {
-      console.error('Failed to start recording:', error);
-      toast({
-        title: "Recording Failed",
-        description: "Could not start recording. Please try again.",
-        variant: "destructive",
-      });
-    }
-  }, [audioRef, isPlaying, isRecording, currentStation, toast]);
-
-  const stopRecording = useCallback(() => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      toast({
-        title: "Recording Stopped",
-        description: "Your recording is ready to download",
-      });
-    }
-  }, [isRecording, toast]);
-
-  const downloadRecording = useCallback(() => {
-    if (recordedChunks.length === 0) return;
-
-    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    
-    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-    const filename = `ShonoWave_${currentStation?.name || 'Recording'}_${timestamp}.webm`;
-    
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    toast({
-      title: "Download Complete",
-      description: `Saved as ${filename}`,
-    });
-
-    // Clear recorded chunks
-    setRecordedChunks([]);
-  }, [recordedChunks, currentStation, toast]);
 
   const value: AudioContextType = {
     currentStation,
@@ -385,17 +294,12 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     volume,
     isMuted,
     error,
-    isRecording,
-    recordedChunks,
     playStation,
     pauseStation,
     togglePlayPause,
     setVolume,
     toggleMute,
     retry,
-    startRecording,
-    stopRecording,
-    downloadRecording,
   };
 
   return (

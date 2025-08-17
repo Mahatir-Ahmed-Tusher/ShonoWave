@@ -1,4 +1,3 @@
-import { AppHeader } from "@/components/app-header";
 import { StationGrid } from "@/components/station-grid";
 import { PlayerBar } from "@/components/player-bar";
 import { FullPlayer } from "@/components/full-player";
@@ -31,8 +30,6 @@ export default function Favorites() {
 
   return (
     <div className="min-h-screen pb-20 bg-slate-50 dark:bg-dark-bg">
-      <AppHeader />
-      
       {/* Navigation */}
       <nav className="sticky top-16 z-30 bg-white/95 dark:bg-dark-bg/95 backdrop-blur-sm border-b border-slate-200 dark:border-dark-border">
         <div className="container mx-auto px-4">

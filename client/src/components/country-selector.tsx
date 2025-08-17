@@ -146,7 +146,7 @@ export function CountrySelector({
               disabled={loadingCountries}
             >
               <SelectTrigger 
-                className="w-full glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 hover:border-sw-primary/50 dark:hover:border-sw-primary/50 transition-all duration-200 h-12 text-slate-700 dark:text-slate-200"
+                className="w-full glass dark:glass-dark backdrop-blur-sm border-2 border-slate-300 dark:border-slate-600 hover:border-sw-primary/50 dark:hover:border-sw-primary/50 transition-all duration-200 h-12 text-slate-700 dark:text-slate-200"
                 data-testid="select-country"
               >
                 <SelectValue placeholder={loadingCountries ? "Loading..." : "Select country"}>
@@ -157,13 +157,13 @@ export function CountrySelector({
                   )}
                 </SelectValue>
               </SelectTrigger>
-              <SelectContent className="max-h-80 glass dark:glass-dark backdrop-blur-xl border-white/20 dark:border-white/10">
-                <div className="p-3 border-b border-white/20 dark:border-white/10">
+              <SelectContent className="max-h-80 glass dark:glass-dark backdrop-blur-xl border-2 border-slate-300 dark:border-slate-600">
+                <div className="p-3 border-b border-slate-300 dark:border-slate-600">
                   <Input
                     placeholder="Search countries..."
                     value={searchCountry}
                     onChange={(e) => setSearchCountry(e.target.value)}
-                    className="h-9 glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 text-slate-700 dark:text-slate-200"
+                    className="h-9 glass dark:glass-dark backdrop-blur-sm border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200"
                   />
                 </div>
                 <SelectItem value="All" className="hover:bg-white/20 dark:hover:bg-white/10">
@@ -198,7 +198,7 @@ export function CountrySelector({
               disabled={loadingLanguages}
             >
               <SelectTrigger 
-                className="w-full glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 hover:border-sw-secondary/50 dark:hover:border-sw-secondary/50 transition-all duration-200 h-12 text-slate-700 dark:text-slate-200"
+                className="w-full glass dark:glass-dark backdrop-blur-sm border-2 border-slate-300 dark:border-slate-600 hover:border-sw-secondary/50 dark:hover:border-sw-secondary/50 transition-all duration-200 h-12 text-slate-700 dark:text-slate-200"
                 data-testid="select-language"
               >
                 <SelectValue placeholder={loadingLanguages ? "Loading..." : "Any language"}>
@@ -207,13 +207,13 @@ export function CountrySelector({
                   </span>
                 </SelectValue>
               </SelectTrigger>
-              <SelectContent className="max-h-80 glass dark:glass-dark backdrop-blur-xl border-white/20 dark:border-white/10">
-                <div className="p-3 border-b border-white/20 dark:border-white/10">
+              <SelectContent className="max-h-80 glass dark:glass-dark backdrop-blur-xl border-2 border-slate-300 dark:border-slate-600">
+                <div className="p-3 border-b border-slate-300 dark:border-slate-600">
                   <Input
                     placeholder="Search languages..."
                     value={searchLanguage}
                     onChange={(e) => setSearchLanguage(e.target.value)}
-                    className="h-9 glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 text-slate-700 dark:text-slate-200"
+                    className="h-9 glass dark:glass-dark backdrop-blur-sm border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200"
                   />
                 </div>
                 <SelectItem value="All" className="hover:bg-white/20 dark:hover:bg-white/10">
@@ -244,7 +244,7 @@ export function CountrySelector({
               className={`flex items-center gap-2 h-10 px-4 font-semibold transition-all duration-200 ${
                 selectedCountry === "Bangladesh" 
                   ? "bg-gradient-to-r from-sw-primary to-sw-secondary text-white shadow-lg hover:shadow-sw-primary/25" 
-                  : "glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 hover:border-sw-primary/50 dark:hover:border-sw-primary/50 text-slate-700 dark:text-slate-200"
+                  : "glass dark:glass-dark backdrop-blur-sm border-2 border-slate-300 dark:border-slate-600 hover:border-sw-primary/50 dark:hover:border-sw-primary/50 text-slate-700 dark:text-slate-200"
               }`}
               data-testid="button-quick-bangladesh"
             >
@@ -257,7 +257,7 @@ export function CountrySelector({
               className={`flex items-center gap-2 h-10 px-4 font-semibold transition-all duration-200 ${
                 selectedCountry === "India" 
                   ? "bg-gradient-to-r from-sw-secondary to-sw-accent text-white shadow-lg hover:shadow-sw-secondary/25" 
-                  : "glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 hover:border-sw-secondary/50 dark:hover:border-sw-secondary/50 text-slate-700 dark:text-slate-200"
+                  : "glass dark:glass-dark backdrop-blur-sm border-2 border-slate-300 dark:border-slate-600 hover:border-sw-secondary/50 dark:hover:border-sw-secondary/50 text-slate-700 dark:text-slate-200"
               }`}
               data-testid="button-quick-india"
             >
@@ -270,7 +270,7 @@ export function CountrySelector({
               className={`flex items-center gap-2 h-10 px-4 font-semibold transition-all duration-200 ${
                 selectedCountry === "United States" 
                   ? "bg-gradient-to-r from-sw-accent to-sw-primary text-white shadow-lg hover:shadow-sw-accent/25" 
-                  : "glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 hover:border-sw-accent/50 dark:hover:border-sw-accent/50 text-slate-700 dark:text-slate-200"
+                  : "glass dark:glass-dark backdrop-blur-sm border-2 border-slate-300 dark:border-slate-600 hover:border-sw-accent/50 dark:hover:border-sw-accent/50 text-slate-700 dark:text-slate-200"
               }`}
               data-testid="button-quick-usa"
             >

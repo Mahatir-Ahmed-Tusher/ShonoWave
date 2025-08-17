@@ -1,6 +1,37 @@
 import { Station, RadioBrowserResponse, SearchParams } from "@shared/schema";
 
-const API_BASE = "";
+const RADIO_BROWSER_MIRRORS = [
+  'https://de1.api.radio-browser.info',
+  'https://nl1.api.radio-browser.info',
+  'https://at1.api.radio-browser.info'
+];
+
+async function fetchFromRadioBrowser(endpoint: string, params: URLSearchParams = new URLSearchParams()): Promise<any[]> {
+  const errors: Error[] = [];
+  
+  for (const mirror of RADIO_BROWSER_MIRRORS) {
+    try {
+      const url = `${mirror}${endpoint}?${params.toString()}`;
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'ShonoWave/1.0 (Radio Stream App)',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      errors.push(error as Error);
+      continue;
+    }
+  }
+  
+  throw new Error(`All mirrors failed: ${errors.map(e => e.message).join(', ')}`);
+}
 
 export async function fetchStationsByCountry(
   country: string, 
@@ -10,25 +41,18 @@ export async function fetchStationsByCountry(
     limit: options.limit?.toString() || "50",
     offset: options.offset?.toString() || "0",
     order: options.order || "clickcount",
+    reverse: "true",
+    hidebroken: "true"
   });
 
-  const response = await fetch(`${API_BASE}/api/stations/${encodeURIComponent(country)}?${params}`);
-  
-  if (!response.ok) {
-    throw new Error(`Failed to fetch stations: ${response.statusText}`);
-  }
-  
-  const data: RadioBrowserResponse = await response.json();
-  
-  if (!data.ok) {
-    throw new Error(data.message || "Failed to fetch stations");
-  }
-  
-  return data.data || [];
+  return await fetchFromRadioBrowser(`/json/stations/bycountry/${encodeURIComponent(country)}`, params);
 }
 
 export async function searchStations(searchParams: SearchParams): Promise<Station[]> {
-  const params = new URLSearchParams();
+  const params = new URLSearchParams({
+    reverse: "true",
+    hidebroken: "true"
+  });
   
   Object.entries(searchParams).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== "") {
@@ -36,81 +60,21 @@ export async function searchStations(searchParams: SearchParams): Promise<Statio
     }
   });
 
-  const response = await fetch(`${API_BASE}/api/stations/search?${params}`);
-  
-  if (!response.ok) {
-    throw new Error(`Search failed: ${response.statusText}`);
-  }
-  
-  const data: RadioBrowserResponse = await response.json();
-  
-  if (!data.ok) {
-    throw new Error(data.message || "Search failed");
-  }
-  
-  return data.data || [];
+  return await fetchFromRadioBrowser('/json/stations/search', params);
 }
 
 export async function fetchTopStations(count: number = 50): Promise<Station[]> {
-  const response = await fetch(`${API_BASE}/api/stations/top/${count}`);
-  
-  if (!response.ok) {
-    throw new Error(`Failed to fetch top stations: ${response.statusText}`);
-  }
-  
-  const data: RadioBrowserResponse = await response.json();
-  
-  if (!data.ok) {
-    throw new Error(data.message || "Failed to fetch top stations");
-  }
-  
-  return data.data || [];
+  return await fetchFromRadioBrowser(`/json/stations/topclick/${count}`);
 }
 
 export async function fetchCountries(): Promise<any[]> {
-  const response = await fetch(`${API_BASE}/api/countries`);
-  
-  if (!response.ok) {
-    throw new Error(`Failed to fetch countries: ${response.statusText}`);
-  }
-  
-  const data: RadioBrowserResponse = await response.json();
-  
-  if (!data.ok) {
-    throw new Error(data.message || "Failed to fetch countries");
-  }
-  
-  return data.data || [];
+  return await fetchFromRadioBrowser('/json/countries');
 }
 
 export async function fetchLanguages(): Promise<any[]> {
-  const response = await fetch(`${API_BASE}/api/languages`);
-  
-  if (!response.ok) {
-    throw new Error(`Failed to fetch languages: ${response.statusText}`);
-  }
-  
-  const data: RadioBrowserResponse = await response.json();
-  
-  if (!data.ok) {
-    throw new Error(data.message || "Failed to fetch languages");
-  }
-  
-  return data.data || [];
+  return await fetchFromRadioBrowser('/json/languages');
 }
 
 export async function fetchTags(): Promise<any[]> {
-  const response = await fetch(`${API_BASE}/api/tags`);
-  
-  if (!response.ok) {
-    throw new Error(`Failed to fetch tags: ${response.statusText}`);
-  }
-  
-  const data: RadioBrowserResponse = await response.json();
-  
-  if (!data.ok) {
-    throw new Error(data.message || "Failed to fetch tags");
-  }
-  
-  return data.data || [];
+  return await fetchFromRadioBrowser('/json/tags');
 }

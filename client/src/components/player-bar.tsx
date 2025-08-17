@@ -15,16 +15,11 @@ export function PlayerBar({ onOpenFullPlayer }: PlayerBarProps) {
     isLoading,
     volume,
     isMuted,
-    isRecording,
-    recordedChunks,
     togglePlayPause,
     setVolume,
     toggleMute,
     retry,
     error,
-    startRecording,
-    stopRecording,
-    downloadRecording,
   } = useAudio();
 
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
@@ -60,12 +55,12 @@ export function PlayerBar({ onOpenFullPlayer }: PlayerBarProps) {
           {/* Current Station Info */}
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <img
-              src={currentStation.favicon || "/fallback-favicon.png"}
+              src={currentStation.favicon || "/shonowave-logo.png"}
               alt={`${currentStation.name} logo`}
               className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
-                target.src = "/fallback-favicon.png";
+                target.src = "/shonowave-logo.png";
               }}
             />
             
@@ -118,47 +113,7 @@ export function PlayerBar({ onOpenFullPlayer }: PlayerBarProps) {
               />
             </div>
 
-            {/* Recording Controls */}
-            {isPlaying && (
-              <div className="flex items-center gap-1">
-                {!isRecording ? (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={startRecording}
-                    className="w-8 h-8 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center justify-center transition-all"
-                    data-testid="button-start-recording"
-                    title="Start Recording"
-                  >
-                    <i className="fas fa-circle text-red-500 text-sm"></i>
-                  </Button>
-                ) : (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={stopRecording}
-                    className="w-8 h-8 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center justify-center transition-all animate-pulse"
-                    data-testid="button-stop-recording"
-                    title="Stop Recording"
-                  >
-                    <i className="fas fa-stop text-red-600 text-sm"></i>
-                  </Button>
-                )}
-                
-                {recordedChunks.length > 0 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={downloadRecording}
-                    className="w-8 h-8 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/20 flex items-center justify-center transition-all"
-                    data-testid="button-download-recording"
-                    title="Download Recording"
-                  >
-                    <i className="fas fa-download text-green-600 text-sm"></i>
-                  </Button>
-                )}
-              </div>
-            )}
+
 
             {/* Error Retry Button */}
             {error && (

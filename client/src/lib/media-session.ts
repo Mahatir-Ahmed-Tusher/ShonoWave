@@ -20,10 +20,10 @@ export function setupMediaSession(station: Station, actions: MediaSessionActions
   navigator.mediaSession.metadata = new MediaMetadata({
     title: station.name,
     artist: station.country,
-    album: station.tags || "Radio Stream",
+    album: station.tags || "ShonoWave",
     artwork: [
       {
-        src: station.favicon || "/fallback-favicon.png",
+        src: station.favicon || "/shonowave-logo.png",
         sizes: "96x96",
         type: "image/png",
       },

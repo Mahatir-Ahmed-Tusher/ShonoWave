@@ -65,30 +65,26 @@ export function SearchFilters({
             placeholder="Search radio stations..."
             value={localSearchQuery}
             onChange={(e) => setLocalSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-4 glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 rounded-xl focus:ring-2 focus:ring-sw-primary/50 focus:border-sw-primary/50 transition-all duration-200 text-slate-700 dark:text-slate-200 placeholder:text-slate-500 dark:placeholder:text-slate-400"
+            className="w-full pl-12 pr-4 py-4 glass dark:glass-dark backdrop-blur-sm border-2 border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-sw-primary/50 focus:border-sw-primary/50 transition-all duration-200 text-slate-700 dark:text-slate-200 placeholder:text-slate-500 dark:placeholder:text-slate-400"
             data-testid="input-search-stations"
           />
         </div>
 
-        {/* Filter Pills */}
-        <div className="flex flex-wrap gap-3">
-          {genres.map((genre) => (
-            <Button
-              key={genre.value}
-              variant={selectedGenre === genre.value ? "default" : "secondary"}
-              size="sm"
-              onClick={() => onGenreChange(genre.value)}
-              className={cn(
-                "px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200",
-                selectedGenre === genre.value
-                  ? "bg-gradient-to-r from-sw-primary to-sw-secondary text-white shadow-lg hover:shadow-sw-primary/25"
-                  : "glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 text-slate-700 dark:text-slate-200 hover:border-sw-primary/50 dark:hover:border-sw-primary/50"
-              )}
-              data-testid={`filter-${genre.value}`}
-            >
-              {genre.label}
-            </Button>
-          ))}
+        {/* Genre Dropdown */}
+        <div className="flex items-center gap-4">
+          <label className="text-sm font-medium text-slate-700 dark:text-slate-200">Genre:</label>
+          <Select value={selectedGenre} onValueChange={onGenreChange}>
+            <SelectTrigger className="w-48 glass dark:glass-dark backdrop-blur-sm border-2 border-slate-300 dark:border-slate-600 rounded-xl h-11 text-slate-700 dark:text-slate-200 hover:border-sw-accent/50 dark:hover:border-sw-accent/50 transition-all duration-200" data-testid="select-genre">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="glass dark:glass-dark backdrop-blur-xl border-2 border-slate-300 dark:border-slate-600">
+              {genres.map((genre) => (
+                <SelectItem key={genre.value} value={genre.value} className="hover:bg-white/20 dark:hover:bg-white/10">
+                  {genre.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Sort Controls */}
@@ -98,10 +94,10 @@ export function SearchFilters({
           </p>
           
           <Select value={sortBy} onValueChange={onSortChange}>
-            <SelectTrigger className="w-48 glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 rounded-xl h-11 text-slate-700 dark:text-slate-200 hover:border-sw-accent/50 dark:hover:border-sw-accent/50 transition-all duration-200" data-testid="select-sort">
+            <SelectTrigger className="w-48 glass dark:glass-dark backdrop-blur-sm border-2 border-slate-300 dark:border-slate-600 rounded-xl h-11 text-slate-700 dark:text-slate-200 hover:border-sw-accent/50 dark:hover:border-sw-accent/50 transition-all duration-200" data-testid="select-sort">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="glass dark:glass-dark backdrop-blur-xl border-white/20 dark:border-white/10">
+            <SelectContent className="glass dark:glass-dark backdrop-blur-xl border-2 border-slate-300 dark:border-slate-600">
               {sortOptions.map((option) => (
                 <SelectItem key={option.value} value={option.value} className="hover:bg-white/20 dark:hover:bg-white/10">
                   {option.label}

@@ -1,7 +1,7 @@
 {
   "name": "ShonoWave - Worldwide FM Radio",
   "short_name": "ShonoWave",
-  "description": "Listen to live FM radio stations from around the world with recording capabilities",
+  "description": "Listen to live FM radio stations from around the world",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#8B5CF6",
@@ -9,13 +9,13 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/icons/icon-192.png",
+      "src": "/shonowave-logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "/shonowave-logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

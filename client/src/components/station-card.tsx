@@ -72,12 +72,13 @@ export function StationCard({ station, isCurrentStation }: StationCardProps) {
       <div className="flex items-start gap-3">
         {/* Station Logo */}
         <img
-          src={station.favicon || "/fallback-favicon.png"}
+          src={station.favicon || "/shonowave-logo.png"}
           alt={`${station.name} logo`}
           className="w-12 h-12 rounded-lg object-cover flex-shrink-0 bg-slate-100 dark:bg-slate-600"
           onError={(e) => {
+            console.log('Station logo failed to load, using ShonoWave fallback:', station.name);
             const target = e.target as HTMLImageElement;
-            target.src = "/fallback-favicon.png";
+            target.src = "/shonowave-logo.png";
           }}
         />
         

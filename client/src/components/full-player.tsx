@@ -103,12 +103,12 @@ export function FullPlayer({ isOpen, onClose }: FullPlayerProps) {
           {/* Large station artwork */}
           <div className="relative mb-6">
             <img
-              src={currentStation.favicon || "/fallback-favicon.png"}
+              src={currentStation.favicon || "/shonowave-logo.png"}
               alt={`${currentStation.name} artwork`}
               className="w-48 h-48 rounded-2xl object-cover mx-auto shadow-lg"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
-                target.src = "/fallback-favicon.png";
+                target.src = "/shonowave-logo.png";
               }}
             />
             
