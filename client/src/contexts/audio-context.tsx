@@ -148,9 +148,9 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
 
     // Use url_resolved first, fallback to url
-    const streamUrl = station.url_resolved || station.url;
+    const originalUrl = station.url_resolved || station.url;
     
-    if (!streamUrl) {
+    if (!originalUrl) {
       setError("No stream URL available");
       setIsLoading(false);
       toast({
@@ -161,30 +161,75 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    // Function to try direct stream first, then proxy
+    const tryPlayStream = async (useProxy: boolean = false) => {
+      try {
+        let streamUrl: string;
+        
+        if (useProxy) {
+          // Use our server proxy for problematic streams
+          streamUrl = `/api/stream/${station.stationuuid}?url=${encodeURIComponent(originalUrl)}`;
+        } else {
+          // Try direct stream first
+          streamUrl = originalUrl;
+        }
+
+        // Check stream health first if using proxy
+        if (useProxy) {
+          const healthCheck = await fetch(`/api/stream/check/${station.stationuuid}?url=${encodeURIComponent(originalUrl)}`);
+          const healthData = await healthCheck.json();
+          
+          if (!healthData.healthy) {
+            throw new Error(`Stream is not accessible: ${healthData.message}`);
+          }
+        }
+
+        audioRef.current!.src = streamUrl;
+        await audioRef.current!.play();
+        
+        // Setup media session
+        setupMediaSession(station, {
+          play: () => togglePlayPause(),
+          pause: () => togglePlayPause(),
+          stop: () => pauseStation(),
+        });
+        
+        toast({
+          title: "Now Playing",
+          description: station.name,
+        });
+        
+        return true; // Success
+      } catch (error) {
+        console.error(`Failed to play ${useProxy ? 'proxied' : 'direct'} stream:`, error);
+        return false; // Failed
+      }
+    };
+
     try {
-      audioRef.current.src = streamUrl;
-      await audioRef.current.play();
+      // First, try direct stream
+      const directSuccess = await tryPlayStream(false);
       
-      // Setup media session
-      setupMediaSession(station, {
-        play: () => togglePlayPause(),
-        pause: () => togglePlayPause(),
-        stop: () => pauseStation(),
-      });
-      
-      toast({
-        title: "Now Playing",
-        description: station.name,
-      });
+      if (!directSuccess) {
+        // If direct failed, try with proxy
+        const proxySuccess = await tryPlayStream(true);
+        
+        if (!proxySuccess) {
+          // Both failed
+          throw new Error("Stream is not accessible through direct connection or proxy");
+        }
+      }
     } catch (err) {
       console.error("Failed to play station:", err);
       setError("Failed to play station");
       setIsLoading(false);
       setIsPlaying(false);
       
+      const errorMessage = err instanceof Error ? err.message : "Could not start playback. The station may be offline.";
+      
       toast({
         title: "Playback Error",
-        description: "Could not start playback. The station may be offline.",
+        description: errorMessage,
         variant: "destructive",
       });
     }

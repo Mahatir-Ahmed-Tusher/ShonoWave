@@ -11,7 +11,7 @@ interface StationCardProps {
 
 export function StationCard({ station, isCurrentStation }: StationCardProps) {
   const { playStation, currentStation, isPlaying } = useAudio();
-  const { isFavorite, addFavorite, removeFavorite } = useFavorites();
+  const { isFavorite, addToFavorites, removeFromFavorites } = useFavorites();
   
   const isStationFavorited = isFavorite(station.stationuuid);
   const isPlaying_ = isCurrentStation && isPlaying;
@@ -22,9 +22,9 @@ export function StationCard({ station, isCurrentStation }: StationCardProps) {
 
   const handleFavoriteToggle = () => {
     if (isStationFavorited) {
-      removeFavorite(station.stationuuid);
+      removeFromFavorites(station.stationuuid);
     } else {
-      addFavorite(station);
+      addToFavorites(station);
     }
   };
 
@@ -42,30 +42,30 @@ export function StationCard({ station, isCurrentStation }: StationCardProps) {
   const getPrimaryColor = (country: string) => {
     switch (country.toLowerCase()) {
       case 'bangladesh':
-        return 'bg-bd-primary hover:bg-bd-primary/90';
+        return 'bg-gradient-to-r from-sw-primary to-sw-secondary hover:from-sw-primary/90 hover:to-sw-secondary/90';
       case 'india':
-        return 'bg-in-primary hover:bg-in-primary/90';
+        return 'bg-gradient-to-r from-sw-secondary to-sw-accent hover:from-sw-secondary/90 hover:to-sw-accent/90';
       default:
-        return 'bg-primary hover:bg-primary/90';
+        return 'bg-gradient-to-r from-sw-accent to-sw-primary hover:from-sw-accent/90 hover:to-sw-primary/90';
     }
   };
 
   const getCountryBadgeColor = (country: string) => {
     switch (country.toLowerCase()) {
       case 'bangladesh':
-        return 'bg-bd-primary/10 text-bd-primary';
+        return 'bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/20 dark:to-blue-900/20 text-sw-primary border border-sw-primary/20';
       case 'india':
-        return 'bg-in-primary/10 text-in-primary';
+        return 'bg-gradient-to-r from-blue-100 to-cyan-100 dark:from-blue-900/20 dark:to-cyan-900/20 text-sw-secondary border border-sw-secondary/20';
       default:
-        return 'bg-primary/10 text-primary';
+        return 'bg-gradient-to-r from-cyan-100 to-purple-100 dark:from-cyan-900/20 dark:to-purple-900/20 text-sw-accent border border-sw-accent/20';
     }
   };
 
   return (
     <div
       className={cn(
-        "bg-white dark:bg-dark-card rounded-xl p-4 shadow-sm border border-slate-100 dark:border-dark-border hover:shadow-md hover:scale-[1.02] transition-all duration-200 group",
-        isCurrentStation && "ring-2 ring-primary ring-opacity-50"
+        "glass dark:glass-dark backdrop-blur-xl rounded-2xl p-5 shadow-lg border border-white/20 dark:border-white/10 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 group",
+        isCurrentStation && "ring-2 ring-sw-primary/50 shadow-sw-primary/20"
       )}
       data-testid={`card-station-${station.stationuuid}`}
     >

@@ -38,6 +38,150 @@ async function fetchFromRadioBrowser(endpoint: string, params: URLSearchParams =
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Stream proxy endpoint to handle CORS and HTTPS issues
+  app.get('/api/stream/:stationId', async (req, res) => {
+    try {
+      const { stationId } = req.params;
+      const { url } = req.query;
+      
+      if (!url || typeof url !== 'string') {
+        return res.status(400).json({ 
+          ok: false, 
+          message: 'Stream URL is required' 
+        });
+      }
+
+      // Set appropriate headers for audio streaming
+      res.setHeader('Content-Type', 'audio/mpeg');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Methods', 'GET');
+      res.setHeader('Accept-Ranges', 'bytes');
+
+      // Create fetch request with appropriate headers
+      const streamResponse = await fetch(decodeURIComponent(url), {
+        headers: {
+          'User-Agent': 'ShonoWave/1.0 (Radio Stream App)',
+          'Accept': 'audio/*,*/*;q=0.1',
+          'Accept-Encoding': 'identity',
+          'Connection': 'keep-alive',
+          'Range': 'bytes=0-',
+        },
+        redirect: 'follow',
+      });
+
+      if (!streamResponse.ok) {
+        return res.status(streamResponse.status).json({
+          ok: false,
+          message: `Stream unavailable: ${streamResponse.statusText}`
+        });
+      }
+
+      // Copy response headers
+      const contentType = streamResponse.headers.get('content-type');
+      if (contentType) {
+        res.setHeader('Content-Type', contentType);
+      }
+
+      // Stream the audio data using Node.js streams
+      if (streamResponse.body) {
+        const reader = streamResponse.body.getReader();
+        
+        const pump = async () => {
+          try {
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              
+              if (!res.write(value)) {
+                // Backpressure handling
+                await new Promise(resolve => res.once('drain', resolve));
+              }
+            }
+            res.end();
+          } catch (error) {
+            console.error('Stream pump error:', error);
+            reader.cancel();
+            if (!res.destroyed) {
+              res.destroy();
+            }
+          }
+        };
+        
+        res.on('close', () => {
+          reader.cancel();
+        });
+        
+        pump();
+      } else {
+        res.status(500).json({ ok: false, message: 'No stream data available' });
+      }
+
+    } catch (error) {
+      console.error('Stream proxy error:', error);
+      if (!res.headersSent) {
+        res.status(500).json({ 
+          ok: false, 
+          message: error instanceof Error ? error.message : 'Stream proxy failed' 
+        });
+      }
+    }
+  });
+
+  // Stream health check endpoint
+  app.get('/api/stream/check/:stationId', async (req, res) => {
+    try {
+      const { url } = req.query;
+      
+      if (!url || typeof url !== 'string') {
+        return res.status(400).json({ 
+          ok: false, 
+          message: 'Stream URL is required' 
+        });
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+      try {
+        const streamResponse = await fetch(decodeURIComponent(url), {
+          method: 'HEAD',
+          headers: {
+            'User-Agent': 'ShonoWave/1.0 (Radio Stream App)',
+            'Accept': 'audio/*,*/*;q=0.1',
+          },
+          signal: controller.signal,
+          redirect: 'follow',
+        });
+
+        clearTimeout(timeoutId);
+
+        const isHealthy = streamResponse.ok;
+        const contentType = streamResponse.headers.get('content-type') || '';
+        const isAudio = contentType.includes('audio') || contentType.includes('application/octet-stream');
+
+        res.json({ 
+          ok: true, 
+          healthy: isHealthy && isAudio,
+          status: streamResponse.status,
+          contentType: contentType,
+          message: isHealthy ? 'Stream is accessible' : `Stream returned ${streamResponse.status}`
+        });
+
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        throw fetchError;
+      }
+
+    } catch (error) {
+      console.error('Stream health check error:', error);
+      res.json({ 
+        ok: true, 
+        healthy: false,
+        message: error instanceof Error ? error.message : 'Stream health check failed' 
+      });
+    }
+  });
   // Get stations by country
   app.get('/api/stations/:country', async (req, res) => {
     try {

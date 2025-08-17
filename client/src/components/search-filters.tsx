@@ -54,24 +54,24 @@ export function SearchFilters({
 
   return (
     <section className="container mx-auto px-4 py-6">
-      <div className="space-y-4">
+      <div className="glass dark:glass-dark backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/20 dark:border-white/10 space-y-6">
         {/* Search Bar */}
         <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <i className="fas fa-search text-slate-400"></i>
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <i className="fas fa-search text-slate-400 dark:text-slate-500"></i>
           </div>
           <Input
             type="text"
             placeholder="Search radio stations..."
             value={localSearchQuery}
             onChange={(e) => setLocalSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-white dark:bg-dark-card border border-slate-200 dark:border-dark-border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-12 pr-4 py-4 glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 rounded-xl focus:ring-2 focus:ring-sw-primary/50 focus:border-sw-primary/50 transition-all duration-200 text-slate-700 dark:text-slate-200 placeholder:text-slate-500 dark:placeholder:text-slate-400"
             data-testid="input-search-stations"
           />
         </div>
 
         {/* Filter Pills */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-3">
           {genres.map((genre) => (
             <Button
               key={genre.value}
@@ -79,10 +79,10 @@ export function SearchFilters({
               size="sm"
               onClick={() => onGenreChange(genre.value)}
               className={cn(
-                "px-3 py-1.5 rounded-full text-sm font-medium transition-colors",
+                "px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200",
                 selectedGenre === genre.value
-                  ? "bg-blue-500 text-white"
-                  : "bg-slate-100 dark:bg-dark-card text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600"
+                  ? "bg-gradient-to-r from-sw-primary to-sw-secondary text-white shadow-lg hover:shadow-sw-primary/25"
+                  : "glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 text-slate-700 dark:text-slate-200 hover:border-sw-primary/50 dark:hover:border-sw-primary/50"
               )}
               data-testid={`filter-${genre.value}`}
             >
@@ -92,18 +92,18 @@ export function SearchFilters({
         </div>
 
         {/* Sort Controls */}
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-slate-500 dark:text-slate-400" data-testid="text-station-count">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <p className="text-sm font-medium text-slate-600 dark:text-slate-300" data-testid="text-station-count">
             {stationCount} stations found
           </p>
           
           <Select value={sortBy} onValueChange={onSortChange}>
-            <SelectTrigger className="w-48 bg-white dark:bg-dark-card border border-slate-200 dark:border-dark-border rounded-lg" data-testid="select-sort">
+            <SelectTrigger className="w-48 glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 rounded-xl h-11 text-slate-700 dark:text-slate-200 hover:border-sw-accent/50 dark:hover:border-sw-accent/50 transition-all duration-200" data-testid="select-sort">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="glass dark:glass-dark backdrop-blur-xl border-white/20 dark:border-white/10">
               {sortOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
+                <SelectItem key={option.value} value={option.value} className="hover:bg-white/20 dark:hover:bg-white/10">
                   {option.label}
                 </SelectItem>
               ))}
