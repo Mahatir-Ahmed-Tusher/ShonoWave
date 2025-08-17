@@ -727,9 +727,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Mahatir Ahmed Tusher**
 
 - **GitHub**: [@Mahatir-Ahmed-Tusher](https://github.com/Mahatir-Ahmed-Tusher)
-- **Email**: [Your Email]
-- **LinkedIn**: [Your LinkedIn]
-- **Portfolio**: [Your Portfolio]
+- **Email**: mahatirtusher@gmail.com
+- **Portfolio**: mahatirtusher.com
 
 ### About the Developer
 
