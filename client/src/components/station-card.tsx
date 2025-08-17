@@ -84,8 +84,8 @@ export function StationCard({ station, isCurrentStation }: StationCardProps) {
         {/* Station Info */}
         <div className="flex-1 min-w-0">
           <h3 className={cn(
-            "font-semibold text-sm line-clamp-2 transition-colors",
-            station.country.toLowerCase() === 'bangladesh' ? "group-hover:text-bd-primary" : "group-hover:text-in-primary"
+            "font-semibold text-sm line-clamp-2 transition-colors text-slate-800 dark:text-slate-100",
+            "group-hover:text-sw-primary dark:group-hover:text-sw-primary"
           )}>
             {station.name}
           </h3>
@@ -148,10 +148,10 @@ export function StationCard({ station, isCurrentStation }: StationCardProps) {
       {/* Playing Animation */}
       {isPlaying_ && (
         <div className="flex items-center gap-1 mt-2 ml-2">
-          <div className="w-1 bg-bd-primary rounded-full animate-bounce-gentle" style={{ height: '12px', animationDelay: '0ms' }}></div>
-          <div className="w-1 bg-bd-primary rounded-full animate-bounce-gentle" style={{ height: '20px', animationDelay: '100ms' }}></div>
-          <div className="w-1 bg-bd-primary rounded-full animate-bounce-gentle" style={{ height: '16px', animationDelay: '200ms' }}></div>
-          <div className="w-1 bg-bd-primary rounded-full animate-bounce-gentle" style={{ height: '24px', animationDelay: '300ms' }}></div>
+          <div className="w-1 bg-sw-primary rounded-full animate-bounce-gentle" style={{ height: '12px', animationDelay: '0ms' }}></div>
+          <div className="w-1 bg-sw-secondary rounded-full animate-bounce-gentle" style={{ height: '20px', animationDelay: '100ms' }}></div>
+          <div className="w-1 bg-sw-accent rounded-full animate-bounce-gentle" style={{ height: '16px', animationDelay: '200ms' }}></div>
+          <div className="w-1 bg-sw-primary rounded-full animate-bounce-gentle" style={{ height: '24px', animationDelay: '300ms' }}></div>
         </div>
       )}
     </div>

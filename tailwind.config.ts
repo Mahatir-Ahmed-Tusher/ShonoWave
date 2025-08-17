@@ -61,14 +61,35 @@ export default {
           border: "var(--sidebar-border)",
           ring: "var(--sidebar-ring)",
         },
-        "bd-primary": "var(--bd-primary)",
-        "in-primary": "var(--in-primary)",
-        "dark-bg": "var(--dark-bg)",
-        "dark-card": "var(--dark-card)",
-        "dark-border": "var(--dark-border)",
+        // ShonoWave Brand Colors
+        "sw-primary": {
+          DEFAULT: "var(--sw-primary)",
+          foreground: "var(--sw-primary-foreground)",
+        },
+        "sw-secondary": {
+          DEFAULT: "var(--sw-secondary)",
+          foreground: "var(--sw-secondary-foreground)",
+        },
+        "sw-accent": {
+          DEFAULT: "var(--sw-accent)",
+          foreground: "var(--sw-accent-foreground)",
+        },
+        "sw-success": {
+          DEFAULT: "var(--sw-success)",
+          foreground: "var(--sw-success-foreground)",
+        },
+        "sw-warning": {
+          DEFAULT: "var(--sw-warning)",
+          foreground: "var(--sw-warning-foreground)",
+        },
+        "sw-danger": {
+          DEFAULT: "var(--sw-danger)",
+          foreground: "var(--sw-danger-foreground)",
+        },
       },
       fontFamily: {
         sans: ["var(--font-sans)"],
+        logo: ["var(--font-logo)"],
         serif: ["var(--font-serif)"],
         mono: ["var(--font-mono)"],
         inter: ["Inter", "system-ui", "sans-serif"],

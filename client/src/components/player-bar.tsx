@@ -45,16 +45,16 @@ export function PlayerBar({ onOpenFullPlayer }: PlayerBarProps) {
   const getPrimaryColor = (country: string) => {
     switch (country.toLowerCase()) {
       case 'bangladesh':
-        return 'bg-bd-primary hover:bg-bd-primary/90';
+        return 'bg-sw-primary hover:bg-sw-primary/90';
       case 'india':
-        return 'bg-in-primary hover:bg-in-primary/90';
+        return 'bg-sw-secondary hover:bg-sw-secondary/90';
       default:
-        return 'bg-primary hover:bg-primary/90';
+        return 'bg-sw-accent hover:bg-sw-accent/90';
     }
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-dark-card/95 backdrop-blur-sm border-t border-slate-200 dark:border-dark-border z-50 transform transition-transform duration-300 animate-slide-up">
+    <div className="fixed bottom-0 left-0 right-0 glass dark:glass-dark backdrop-blur-xl border-t border-white/20 dark:border-white/10 z-50 transform transition-transform duration-300 animate-slide-up shadow-lg shadow-black/5 dark:shadow-black/20">
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center gap-4">
           {/* Current Station Info */}
@@ -72,10 +72,10 @@ export function PlayerBar({ onOpenFullPlayer }: PlayerBarProps) {
             {/* Playing Animation Bars */}
             {isPlaying && !isLoading && !error && (
               <div className="flex items-center gap-1 ml-2">
-                <div className="w-1 bg-bd-primary rounded-full animate-bounce-gentle" style={{ height: '12px', animationDelay: '0ms' }}></div>
-                <div className="w-1 bg-bd-primary rounded-full animate-bounce-gentle" style={{ height: '20px', animationDelay: '100ms' }}></div>
-                <div className="w-1 bg-bd-primary rounded-full animate-bounce-gentle" style={{ height: '16px', animationDelay: '200ms' }}></div>
-                <div className="w-1 bg-bd-primary rounded-full animate-bounce-gentle" style={{ height: '24px', animationDelay: '300ms' }}></div>
+                <div className="w-1 bg-sw-primary rounded-full animate-bounce-gentle" style={{ height: '12px', animationDelay: '0ms' }}></div>
+                <div className="w-1 bg-sw-secondary rounded-full animate-bounce-gentle" style={{ height: '20px', animationDelay: '100ms' }}></div>
+                <div className="w-1 bg-sw-accent rounded-full animate-bounce-gentle" style={{ height: '16px', animationDelay: '200ms' }}></div>
+                <div className="w-1 bg-sw-primary rounded-full animate-bounce-gentle" style={{ height: '24px', animationDelay: '300ms' }}></div>
               </div>
             )}
             

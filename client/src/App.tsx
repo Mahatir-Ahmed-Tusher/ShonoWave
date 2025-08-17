@@ -3,7 +3,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/contexts/theme-context";
 import { AudioProvider } from "@/contexts/audio-context";
 import { FavoritesProvider } from "./contexts/favorites-context";
 import { AppHeader } from "./components/app-header";
@@ -26,7 +26,9 @@ function Router() {
         <main className="pb-20">
           <Switch>
             <Route path="/" component={Home} />
-            <Route path="/country/:country" component={(params) => <Home defaultCountry={(params as any).country} />} />
+            <Route path="/country/:country">
+              {(params) => <Home defaultCountry={params.country} />}
+            </Route>
             <Route path="/favorites" component={Favorites} />
             <Route component={NotFound} />
           </Switch>
