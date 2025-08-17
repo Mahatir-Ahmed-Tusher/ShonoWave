@@ -171,8 +171,8 @@ export function CountrySelector({
                     🌍 All Countries
                   </span>
                 </SelectItem>
-                {filteredCountries.slice(0, 100).map((country: CountryLanguage) => (
-                  <SelectItem key={country.name} value={country.name}>
+                {filteredCountries.slice(0, 100).map((country: CountryLanguage, index) => (
+                  <SelectItem key={`${country.name}-${index}`} value={country.name}>
                     <span className="flex items-center gap-2 justify-between w-full">
                       <span className="flex items-center gap-2">
                         {getCountryFlag(country.name)} {country.name}

@@ -1,11 +1,11 @@
 {
-  "name": "Radio Stream - FM Radio Web App",
-  "short_name": "Radio Stream",
-  "description": "Listen to live FM radio stations from Bangladesh and India",
+  "name": "ShonoWave - Worldwide FM Radio",
+  "short_name": "ShonoWave",
+  "description": "Listen to live FM radio stations from around the world with recording capabilities",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#10B981",
-  "theme_color": "#10B981",
+  "background_color": "#8B5CF6",
+  "theme_color": "#8B5CF6",
   "orientation": "portrait-primary",
   "icons": [
     {

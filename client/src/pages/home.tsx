@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { CountryCode } from "@shared/schema";
-import { AppHeader } from "@/components/app-header";
 import { CountrySelector } from "@/components/country-selector";
 import { SearchFilters } from "@/components/search-filters";
 import { StationGrid } from "@/components/station-grid";
@@ -127,9 +126,7 @@ export default function Home({ defaultCountry = "Bangladesh" }: HomeProps) {
   const isEmpty = !isLoading && filteredStations.length === 0;
 
   return (
-    <div className="min-h-screen pb-20 bg-slate-50 dark:bg-dark-bg">
-      <AppHeader />
-      
+    <div className="min-h-screen pb-20 relative">
       <CountrySelector
         selectedCountry={selectedCountry}
         onCountryChange={handleCountryChange}
@@ -149,17 +146,19 @@ export default function Home({ defaultCountry = "Bangladesh" }: HomeProps) {
       
       {/* Station Results Info */}
       <section className="container mx-auto px-4 pb-2">
-        <div className="flex items-center justify-between mb-4">
-          <div className="text-sm text-slate-600 dark:text-slate-400">
-            {selectedCountry === "All" ? "Worldwide" : selectedCountry} stations
-            {selectedLanguage !== "All" && ` in ${selectedLanguage}`}
-            {debouncedSearchQuery && ` matching "${debouncedSearchQuery}"`}
-          </div>
-          {stations.length > 0 && (
-            <div className="text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded">
-              ✓ {stations.length} verified accessible station{stations.length !== 1 ? 's' : ''}
+        <div className="glass dark:glass-dark rounded-2xl p-4 mb-4 shadow-lg backdrop-blur-xl">
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-slate-700 dark:text-slate-300 font-medium">
+              {selectedCountry === "All" ? "🌍 Worldwide" : selectedCountry} stations
+              {selectedLanguage !== "All" && ` in ${selectedLanguage}`}
+              {debouncedSearchQuery && ` matching "${debouncedSearchQuery}"`}
             </div>
-          )}
+            {stations.length > 0 && (
+              <div className="text-xs font-semibold text-sw-success bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 px-3 py-1.5 rounded-xl border border-green-200/50 dark:border-green-700/50">
+                ✓ {stations.length} verified station{stations.length !== 1 ? 's' : ''}
+              </div>
+            )}
+          </div>
         </div>
       </section>
       

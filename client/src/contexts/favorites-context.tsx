@@ -1,133 +1,66 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { FavoriteStation, Station } from "@shared/schema";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
+import { createContext, useContext, useState, useEffect } from "react";
+import { Station } from "@shared/schema";
 
 interface FavoritesContextType {
-  favorites: FavoriteStation[];
-  isFavorite: (stationUuid: string) => boolean;
-  addFavorite: (station: Station) => void;
-  removeFavorite: (stationUuid: string) => void;
-  isLoading: boolean;
+  favorites: Station[];
+  addToFavorites: (station: Station) => void;
+  removeFromFavorites: (stationId: string) => void;
+  isFavorite: (stationId: string) => boolean;
+  clearFavorites: () => void;
 }
 
 const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
 
 export function FavoritesProvider({ children }: { children: React.ReactNode }) {
-  const [localFavorites, setLocalFavorites] = useState<FavoriteStation[]>([]);
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
+  const [favorites, setFavorites] = useState<Station[]>([]);
 
   // Load favorites from localStorage on mount
   useEffect(() => {
-    const stored = localStorage.getItem("radio-favorites");
-    if (stored) {
+    const savedFavorites = localStorage.getItem('shonowave-favorites');
+    if (savedFavorites) {
       try {
-        const parsed = JSON.parse(stored);
-        setLocalFavorites(parsed);
+        const parsed = JSON.parse(savedFavorites);
+        setFavorites(Array.isArray(parsed) ? parsed : []);
       } catch (error) {
-        console.error("Failed to parse stored favorites:", error);
+        console.error('Failed to parse favorites from localStorage:', error);
+        localStorage.removeItem('shonowave-favorites');
       }
     }
   }, []);
 
-  // Sync with localStorage whenever favorites change
+  // Save favorites to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem("radio-favorites", JSON.stringify(localFavorites));
-  }, [localFavorites]);
+    localStorage.setItem('shonowave-favorites', JSON.stringify(favorites));
+  }, [favorites]);
 
-  // Query server favorites (for future sync if needed)
-  const { data: serverFavorites, isLoading } = useQuery({
-    queryKey: ["/api/favorites"],
-    enabled: false, // Disabled for now since we're using localStorage
-  });
-
-  const addFavoriteMutation = useMutation({
-    mutationFn: async (station: Station) => {
-      const favorite: FavoriteStation = {
-        stationuuid: station.stationuuid,
-        name: station.name,
-        favicon: station.favicon,
-        url_resolved: station.url_resolved,
-        country: station.country,
-        tags: station.tags,
-        bitrate: station.bitrate,
-        addedAt: new Date().toISOString(),
-      };
-
-      // Add to local storage immediately
-      setLocalFavorites(prev => {
-        const exists = prev.some(f => f.stationuuid === station.stationuuid);
-        if (exists) return prev;
-        return [...prev, favorite];
-      });
-
-      return favorite;
-    },
-    onSuccess: (favorite) => {
-      toast({
-        title: "Added to Favorites",
-        description: favorite.name,
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to add to favorites",
-        variant: "destructive",
-      });
-      console.error("Failed to add favorite:", error);
-    },
-  });
-
-  const removeFavoriteMutation = useMutation({
-    mutationFn: async (stationUuid: string) => {
-      const favorite = localFavorites.find(f => f.stationuuid === stationUuid);
-      
-      // Remove from local storage immediately
-      setLocalFavorites(prev => prev.filter(f => f.stationuuid !== stationUuid));
-      
-      return favorite;
-    },
-    onSuccess: (favorite) => {
-      toast({
-        title: "Removed from Favorites",
-        description: favorite?.name || "Station removed",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to remove from favorites",
-        variant: "destructive",
-      });
-      console.error("Failed to remove favorite:", error);
-    },
-  });
-
-  const isFavorite = (stationUuid: string): boolean => {
-    return localFavorites.some(f => f.stationuuid === stationUuid);
+  const addToFavorites = (station: Station) => {
+    setFavorites(prev => {
+      // Avoid duplicates
+      if (prev.some(fav => fav.stationuuid === station.stationuuid)) {
+        return prev;
+      }
+      return [...prev, station];
+    });
   };
 
-  const addFavorite = (station: Station) => {
-    if (!isFavorite(station.stationuuid)) {
-      addFavoriteMutation.mutate(station);
-    }
+  const removeFromFavorites = (stationId: string) => {
+    setFavorites(prev => prev.filter(fav => fav.stationuuid !== stationId));
   };
 
-  const removeFavorite = (stationUuid: string) => {
-    if (isFavorite(stationUuid)) {
-      removeFavoriteMutation.mutate(stationUuid);
-    }
+  const isFavorite = (stationId: string) => {
+    return favorites.some(fav => fav.stationuuid === stationId);
+  };
+
+  const clearFavorites = () => {
+    setFavorites([]);
   };
 
   const value: FavoritesContextType = {
-    favorites: localFavorites,
+    favorites,
+    addToFavorites,
+    removeFromFavorites,
     isFavorite,
-    addFavorite,
-    removeFavorite,
-    isLoading: addFavoriteMutation.isPending || removeFavoriteMutation.isPending,
+    clearFavorites,
   };
 
   return (

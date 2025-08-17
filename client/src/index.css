@@ -40,7 +40,15 @@
   --font-mono: Menlo, monospace;
   --radius: 1.3rem;
   
-  /* Custom colors for app */
+  /* ShonoWave Brand Colors */
+  --sw-primary: hsl(269 91% 60%); /* Purple */
+  --sw-secondary: hsl(217 91% 60%); /* Blue */  
+  --sw-accent: hsl(188 94% 58%); /* Cyan */
+  --sw-success: hsl(142 71% 45%); /* Green */
+  --sw-warning: hsl(45 93% 58%); /* Yellow */
+  --sw-danger: hsl(0 84% 60%); /* Red */
+  
+  /* Legacy colors for compatibility */
   --bd-primary: hsl(162 76% 36%);
   --in-primary: hsl(42 93% 56%);
   --dark-bg: hsl(222 84% 5%);
@@ -119,41 +127,59 @@
 }
 
 @layer utilities {
-  .text-bd-primary {
-    color: var(--bd-primary);
+  /* ShonoWave Brand Colors */
+  .text-sw-primary { color: var(--sw-primary); }
+  .text-sw-secondary { color: var(--sw-secondary); }
+  .text-sw-accent { color: var(--sw-accent); }
+  .text-sw-success { color: var(--sw-success); }
+  .text-sw-warning { color: var(--sw-warning); }
+  .text-sw-danger { color: var(--sw-danger); }
+  
+  .bg-sw-primary { background-color: var(--sw-primary); }
+  .bg-sw-secondary { background-color: var(--sw-secondary); }
+  .bg-sw-accent { background-color: var(--sw-accent); }
+  .bg-sw-success { background-color: var(--sw-success); }
+  .bg-sw-warning { background-color: var(--sw-warning); }
+  .bg-sw-danger { background-color: var(--sw-danger); }
+  
+  .border-sw-primary { border-color: var(--sw-primary); }
+  .border-sw-secondary { border-color: var(--sw-secondary); }
+  .border-sw-accent { border-color: var(--sw-accent); }
+  
+  /* Glass morphism utilities */
+  .glass {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
   
-  .text-in-primary {
-    color: var(--in-primary);
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
-  .bg-bd-primary {
-    background-color: var(--bd-primary);
+  .gradient-text {
+    background: linear-gradient(135deg, var(--sw-primary), var(--sw-secondary), var(--sw-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   
-  .bg-in-primary {
-    background-color: var(--in-primary);
+  .gradient-bg-sw {
+    background: linear-gradient(135deg, var(--sw-primary), var(--sw-secondary), var(--sw-accent));
   }
   
-  .border-bd-primary {
-    border-color: var(--bd-primary);
-  }
-  
-  .border-in-primary {
-    border-color: var(--in-primary);
-  }
-  
-  .bg-dark-bg {
-    background-color: var(--dark-bg);
-  }
-  
-  .bg-dark-card {
-    background-color: var(--dark-card);
-  }
-  
-  .border-dark-border {
-    border-color: var(--dark-border);
-  }
+  /* Legacy colors for compatibility */
+  .text-bd-primary { color: var(--bd-primary); }
+  .text-in-primary { color: var(--in-primary); }
+  .bg-bd-primary { background-color: var(--bd-primary); }
+  .bg-in-primary { background-color: var(--in-primary); }
+  .border-bd-primary { border-color: var(--bd-primary); }
+  .border-in-primary { border-color: var(--in-primary); }
+  .bg-dark-bg { background-color: var(--dark-bg); }
+  .bg-dark-card { background-color: var(--dark-card); }
+  .border-dark-border { border-color: var(--dark-border); }
 }
 
 @keyframes fadeIn {
