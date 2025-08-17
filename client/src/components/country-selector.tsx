@@ -132,12 +132,12 @@ export function CountrySelector({
   };
 
   return (
-    <section className="bg-white/95 dark:bg-dark-card/95 backdrop-blur-sm border-b border-slate-200 dark:border-dark-border">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex flex-col sm:flex-row gap-4">
+    <section className="glass dark:glass-dark backdrop-blur-xl border-b border-white/20 dark:border-white/10 shadow-lg">
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex flex-col sm:flex-row gap-6">
           {/* Country Selector */}
           <div className="flex-1">
-            <label className="block text-sm font-medium mb-2 text-slate-600 dark:text-slate-300">
+            <label className="block text-sm font-semibold mb-3 text-slate-700 dark:text-slate-200">
               Country
             </label>
             <Select 
@@ -146,38 +146,38 @@ export function CountrySelector({
               disabled={loadingCountries}
             >
               <SelectTrigger 
-                className="w-full bg-white dark:bg-dark-card border border-slate-200 dark:border-dark-border"
+                className="w-full glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 hover:border-sw-primary/50 dark:hover:border-sw-primary/50 transition-all duration-200 h-12 text-slate-700 dark:text-slate-200"
                 data-testid="select-country"
               >
                 <SelectValue placeholder={loadingCountries ? "Loading..." : "Select country"}>
                   {selectedCountry && (
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-2 font-medium">
                       {getCountryFlag(selectedCountry)} {selectedCountry}
                     </span>
                   )}
                 </SelectValue>
               </SelectTrigger>
-              <SelectContent className="max-h-80">
-                <div className="p-2 border-b">
+              <SelectContent className="max-h-80 glass dark:glass-dark backdrop-blur-xl border-white/20 dark:border-white/10">
+                <div className="p-3 border-b border-white/20 dark:border-white/10">
                   <Input
                     placeholder="Search countries..."
                     value={searchCountry}
                     onChange={(e) => setSearchCountry(e.target.value)}
-                    className="h-8"
+                    className="h-9 glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 text-slate-700 dark:text-slate-200"
                   />
                 </div>
-                <SelectItem value="All">
-                  <span className="flex items-center gap-2">
+                <SelectItem value="All" className="hover:bg-white/20 dark:hover:bg-white/10">
+                  <span className="flex items-center gap-2 font-medium">
                     🌍 All Countries
                   </span>
                 </SelectItem>
                 {filteredCountries.slice(0, 100).map((country: CountryLanguage, index) => (
-                  <SelectItem key={`${country.name}-${index}`} value={country.name}>
+                  <SelectItem key={`${country.name}-${index}`} value={country.name} className="hover:bg-white/20 dark:hover:bg-white/10">
                     <span className="flex items-center gap-2 justify-between w-full">
-                      <span className="flex items-center gap-2">
+                      <span className="flex items-center gap-2 font-medium">
                         {getCountryFlag(country.name)} {country.name}
                       </span>
-                      <span className="text-xs text-slate-500 ml-auto">
+                      <span className="text-xs text-slate-500 dark:text-slate-400 ml-auto bg-slate-100/50 dark:bg-slate-800/50 px-2 py-0.5 rounded-full">
                         {country.stationcount}
                       </span>
                     </span>
@@ -189,7 +189,7 @@ export function CountrySelector({
 
           {/* Language Selector */}
           <div className="flex-1">
-            <label className="block text-sm font-medium mb-2 text-slate-600 dark:text-slate-300">
+            <label className="block text-sm font-semibold mb-3 text-slate-700 dark:text-slate-200">
               Language
             </label>
             <Select 
@@ -198,32 +198,34 @@ export function CountrySelector({
               disabled={loadingLanguages}
             >
               <SelectTrigger 
-                className="w-full bg-white dark:bg-dark-card border border-slate-200 dark:border-dark-border"
+                className="w-full glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 hover:border-sw-secondary/50 dark:hover:border-sw-secondary/50 transition-all duration-200 h-12 text-slate-700 dark:text-slate-200"
                 data-testid="select-language"
               >
                 <SelectValue placeholder={loadingLanguages ? "Loading..." : "Any language"}>
-                  {selectedLanguage === "All" ? "Any Language" : selectedLanguage}
+                  <span className="font-medium">
+                    {selectedLanguage === "All" ? "Any Language" : selectedLanguage}
+                  </span>
                 </SelectValue>
               </SelectTrigger>
-              <SelectContent className="max-h-80">
-                <div className="p-2 border-b">
+              <SelectContent className="max-h-80 glass dark:glass-dark backdrop-blur-xl border-white/20 dark:border-white/10">
+                <div className="p-3 border-b border-white/20 dark:border-white/10">
                   <Input
                     placeholder="Search languages..."
                     value={searchLanguage}
                     onChange={(e) => setSearchLanguage(e.target.value)}
-                    className="h-8"
+                    className="h-9 glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 text-slate-700 dark:text-slate-200"
                   />
                 </div>
-                <SelectItem value="All">
-                  <span className="flex items-center gap-2">
+                <SelectItem value="All" className="hover:bg-white/20 dark:hover:bg-white/10">
+                  <span className="flex items-center gap-2 font-medium">
                     🗣️ Any Language
                   </span>
                 </SelectItem>
                 {filteredLanguages.map((language: CountryLanguage) => (
-                  <SelectItem key={language.name} value={language.name}>
+                  <SelectItem key={language.name} value={language.name} className="hover:bg-white/20 dark:hover:bg-white/10">
                     <span className="flex items-center justify-between w-full">
-                      <span>{language.name}</span>
-                      <span className="text-xs text-slate-500 ml-auto">
+                      <span className="font-medium">{language.name}</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 ml-auto bg-slate-100/50 dark:bg-slate-800/50 px-2 py-0.5 rounded-full">
                         {language.stationcount}
                       </span>
                     </span>
@@ -234,12 +236,16 @@ export function CountrySelector({
           </div>
 
           {/* Quick Access Buttons */}
-          <div className="flex flex-wrap gap-2 sm:flex-col sm:w-auto">
+          <div className="flex flex-wrap gap-3 sm:flex-col sm:w-auto">
             <Button
               variant={selectedCountry === "Bangladesh" ? "default" : "outline"}
               size="sm"
               onClick={() => onCountryChange("Bangladesh")}
-              className="flex items-center gap-1.5"
+              className={`flex items-center gap-2 h-10 px-4 font-semibold transition-all duration-200 ${
+                selectedCountry === "Bangladesh" 
+                  ? "bg-gradient-to-r from-sw-primary to-sw-secondary text-white shadow-lg hover:shadow-sw-primary/25" 
+                  : "glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 hover:border-sw-primary/50 dark:hover:border-sw-primary/50 text-slate-700 dark:text-slate-200"
+              }`}
               data-testid="button-quick-bangladesh"
             >
               🇧🇩 BD
@@ -248,7 +254,11 @@ export function CountrySelector({
               variant={selectedCountry === "India" ? "default" : "outline"}
               size="sm"
               onClick={() => onCountryChange("India")}
-              className="flex items-center gap-1.5"
+              className={`flex items-center gap-2 h-10 px-4 font-semibold transition-all duration-200 ${
+                selectedCountry === "India" 
+                  ? "bg-gradient-to-r from-sw-secondary to-sw-accent text-white shadow-lg hover:shadow-sw-secondary/25" 
+                  : "glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 hover:border-sw-secondary/50 dark:hover:border-sw-secondary/50 text-slate-700 dark:text-slate-200"
+              }`}
               data-testid="button-quick-india"
             >
               🇮🇳 IN
@@ -257,7 +267,11 @@ export function CountrySelector({
               variant={selectedCountry === "United States" ? "default" : "outline"}
               size="sm"
               onClick={() => onCountryChange("United States")}
-              className="flex items-center gap-1.5"
+              className={`flex items-center gap-2 h-10 px-4 font-semibold transition-all duration-200 ${
+                selectedCountry === "United States" 
+                  ? "bg-gradient-to-r from-sw-accent to-sw-primary text-white shadow-lg hover:shadow-sw-accent/25" 
+                  : "glass dark:glass-dark backdrop-blur-sm border-white/30 dark:border-white/20 hover:border-sw-accent/50 dark:hover:border-sw-accent/50 text-slate-700 dark:text-slate-200"
+              }`}
               data-testid="button-quick-usa"
             >
               🇺🇸 US
