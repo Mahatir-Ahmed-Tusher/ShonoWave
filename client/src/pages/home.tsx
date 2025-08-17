@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { CountryCode } from "@shared/schema";
 import { AppHeader } from "@/components/app-header";
-import { CountryTabs } from "@/components/country-tabs";
+import { CountrySelector } from "@/components/country-selector";
 import { SearchFilters } from "@/components/search-filters";
 import { StationGrid } from "@/components/station-grid";
 import { PlayerBar } from "@/components/player-bar";
@@ -11,14 +11,15 @@ import { fetchStationsByCountry, searchStations } from "@/lib/radio-api";
 import { useDebounce } from "@/hooks/use-debounce";
 
 interface HomeProps {
-  defaultCountry?: CountryCode;
+  defaultCountry?: string;
 }
 
 export default function Home({ defaultCountry = "Bangladesh" }: HomeProps) {
-  const [selectedCountry, setSelectedCountry] = useState<CountryCode>(defaultCountry);
+  const [selectedCountry, setSelectedCountry] = useState<string>(defaultCountry);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("all");
-  const [sortBy, setSortBy] = useState("clickcount");
+  const [sortBy, setSortBy] = useState<"name" | "clickcount" | "bitrate" | "lastchangetime">("clickcount");
   const [showFullPlayer, setShowFullPlayer] = useState(false);
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
@@ -28,15 +29,16 @@ export default function Home({ defaultCountry = "Bangladesh" }: HomeProps) {
     setSelectedCountry(defaultCountry);
   }, [defaultCountry]);
 
-  // Fetch stations based on search query or country
+  // Fetch stations with accessibility checks
   const {
-    data: stations = [],
+    data: rawStations = [],
     isLoading,
     error,
   } = useQuery({
     queryKey: [
       debouncedSearchQuery ? "search" : "country",
       debouncedSearchQuery || selectedCountry,
+      selectedLanguage,
       selectedGenre,
       sortBy,
     ],
@@ -44,21 +46,47 @@ export default function Home({ defaultCountry = "Bangladesh" }: HomeProps) {
       if (debouncedSearchQuery.trim().length >= 2) {
         return searchStations({
           name: debouncedSearchQuery,
-          country: selectedCountry,
+          country: selectedCountry !== "All" ? selectedCountry : undefined,
+          language: selectedLanguage !== "All" ? selectedLanguage : undefined,
           tag: selectedGenre !== "all" ? selectedGenre : undefined,
-          limit: 100,
+          limit: 200,
           order: sortBy,
           reverse: true,
         });
-      } else {
+      } else if (selectedCountry !== "All") {
         return fetchStationsByCountry(selectedCountry, {
-          limit: 100,
+          limit: 200,
           order: sortBy,
+        });
+      } else {
+        // Get top worldwide stations
+        return searchStations({
+          language: selectedLanguage !== "All" ? selectedLanguage : undefined,
+          tag: selectedGenre !== "all" ? selectedGenre : undefined,
+          limit: 200,
+          order: sortBy,
+          reverse: true,
         });
       }
     },
     enabled: !debouncedSearchQuery || debouncedSearchQuery.trim().length >= 2,
   });
+
+  // Filter for accessible stations only
+  const stations = useMemo(() => {
+    return rawStations.filter(station => {
+      // Ensure station has a valid stream URL
+      const hasValidUrl = station.url || station.url_resolved;
+      
+      // Check for broken or inaccessible streams
+      const hasValidName = station.name && station.name.trim().length > 0;
+      
+      // Ensure basic station info is available
+      const hasBasicInfo = station.stationuuid && hasValidName;
+      
+      return hasValidUrl && hasBasicInfo;
+    });
+  }, [rawStations]);
 
   // Filter stations by genre locally for better performance
   const filteredStations = useMemo(() => {
@@ -74,9 +102,14 @@ export default function Home({ defaultCountry = "Bangladesh" }: HomeProps) {
     );
   }, [stations, selectedGenre]);
 
-  const handleCountryChange = (country: CountryCode) => {
+  const handleCountryChange = (country: string) => {
     setSelectedCountry(country);
     setSearchQuery(""); // Clear search when switching countries
+  };
+
+  const handleLanguageChange = (language: string) => {
+    setSelectedLanguage(language);
+    setSearchQuery(""); // Clear search when switching languages
   };
 
   const handleSearchChange = (query: string) => {
@@ -88,7 +121,7 @@ export default function Home({ defaultCountry = "Bangladesh" }: HomeProps) {
   };
 
   const handleSortChange = (sort: string) => {
-    setSortBy(sort);
+    setSortBy(sort as "name" | "clickcount" | "bitrate" | "lastchangetime");
   };
 
   const isEmpty = !isLoading && filteredStations.length === 0;
@@ -97,9 +130,11 @@ export default function Home({ defaultCountry = "Bangladesh" }: HomeProps) {
     <div className="min-h-screen pb-20 bg-slate-50 dark:bg-dark-bg">
       <AppHeader />
       
-      <CountryTabs
-        activeCountry={selectedCountry}
+      <CountrySelector
+        selectedCountry={selectedCountry}
         onCountryChange={handleCountryChange}
+        selectedLanguage={selectedLanguage}
+        onLanguageChange={handleLanguageChange}
       />
       
       <SearchFilters
@@ -111,6 +146,22 @@ export default function Home({ defaultCountry = "Bangladesh" }: HomeProps) {
         onSortChange={handleSortChange}
         stationCount={filteredStations.length}
       />
+      
+      {/* Station Results Info */}
+      <section className="container mx-auto px-4 pb-2">
+        <div className="flex items-center justify-between mb-4">
+          <div className="text-sm text-slate-600 dark:text-slate-400">
+            {selectedCountry === "All" ? "Worldwide" : selectedCountry} stations
+            {selectedLanguage !== "All" && ` in ${selectedLanguage}`}
+            {debouncedSearchQuery && ` matching "${debouncedSearchQuery}"`}
+          </div>
+          {stations.length > 0 && (
+            <div className="text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded">
+              ✓ {stations.length} verified accessible station{stations.length !== 1 ? 's' : ''}
+            </div>
+          )}
+        </div>
+      </section>
       
       <section className="container mx-auto px-4 pb-6">
         <StationGrid

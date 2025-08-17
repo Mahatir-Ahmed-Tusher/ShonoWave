@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -48,7 +48,7 @@ export function SearchFilters({
   const debouncedSearchQuery = useDebounce(localSearchQuery, 300);
 
   // Update parent when debounced value changes
-  useState(() => {
+  useEffect(() => {
     onSearchChange(debouncedSearchQuery);
   }, [debouncedSearchQuery, onSearchChange]);
 

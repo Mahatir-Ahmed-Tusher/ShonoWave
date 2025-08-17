@@ -16,7 +16,18 @@ export interface Station {
   lastchangetime?: string;
 }
 
-export type CountryCode = "Bangladesh" | "India";
+export type CountryCode = string; // Support all countries
+
+export interface Country {
+  name: string;
+  code: string;
+  stationcount: number;
+}
+
+export interface Language {
+  name: string;
+  stationcount: number;
+}
 
 export interface FavoriteStation {
   stationuuid: string;

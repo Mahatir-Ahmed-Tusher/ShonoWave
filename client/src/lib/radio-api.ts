@@ -67,6 +67,22 @@ export async function fetchTopStations(count: number = 50): Promise<Station[]> {
   return data.data || [];
 }
 
+export async function fetchCountries(): Promise<any[]> {
+  const response = await fetch(`${API_BASE}/api/countries`);
+  
+  if (!response.ok) {
+    throw new Error(`Failed to fetch countries: ${response.statusText}`);
+  }
+  
+  const data: RadioBrowserResponse = await response.json();
+  
+  if (!data.ok) {
+    throw new Error(data.message || "Failed to fetch countries");
+  }
+  
+  return data.data || [];
+}
+
 export async function fetchLanguages(): Promise<any[]> {
   const response = await fetch(`${API_BASE}/api/languages`);
   

@@ -118,6 +118,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get countries
+  app.get('/api/countries', async (req, res) => {
+    try {
+      const response = await fetchFromRadioBrowser('/json/countries');
+      res.json({ ok: true, data: response });
+    } catch (error) {
+      console.error('Error fetching countries:', error);
+      res.status(500).json({ 
+        ok: false, 
+        message: error instanceof Error ? error.message : 'Failed to fetch countries' 
+      });
+    }
+  });
+
   // Get languages
   app.get('/api/languages', async (req, res) => {
     try {

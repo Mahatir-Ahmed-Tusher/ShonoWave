@@ -1,12 +1,12 @@
 import { AppHeader } from "@/components/app-header";
-import { CountryTabs } from "@/components/country-tabs";
 import { StationGrid } from "@/components/station-grid";
 import { PlayerBar } from "@/components/player-bar";
 import { FullPlayer } from "@/components/full-player";
 import { useFavorites } from "@/contexts/favorites-context";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CountryCode, Station } from "@shared/schema";
+import { Station } from "@shared/schema";
+import { Link } from "wouter";
 
 export default function Favorites() {
   const { favorites, removeFavorite } = useFavorites();
@@ -33,10 +33,26 @@ export default function Favorites() {
     <div className="min-h-screen pb-20 bg-slate-50 dark:bg-dark-bg">
       <AppHeader />
       
-      <CountryTabs
-        activeCountry="Bangladesh" // Dummy value since favorites page doesn't use country
-        onCountryChange={() => {}} // No-op since this page doesn't change countries
-      />
+      {/* Navigation */}
+      <nav className="sticky top-16 z-30 bg-white/95 dark:bg-dark-bg/95 backdrop-blur-sm border-b border-slate-200 dark:border-dark-border">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-4 py-3">
+            <Link
+              href="/"
+              className="flex items-center gap-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+              data-testid="link-back-home"
+            >
+              <i className="fas fa-arrow-left"></i>
+              Back to Stations
+            </Link>
+            <div className="w-px h-6 bg-slate-200 dark:bg-slate-600"></div>
+            <div className="flex items-center gap-2 text-red-500">
+              <i className="fas fa-heart"></i>
+              <span className="font-medium">Your Favorites</span>
+            </div>
+          </div>
+        </div>
+      </nav>
       
       {/* Favorites Header */}
       <section className="container mx-auto px-4 py-6">
@@ -77,14 +93,15 @@ export default function Favorites() {
             <p className="text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-4">
               Start exploring radio stations and add your favorites by clicking the heart icon.
             </p>
-            <Button
-              onClick={() => window.history.back()}
-              className="bg-bd-primary hover:bg-bd-primary/90 text-white"
-              data-testid="button-explore-stations"
-            >
-              <i className="fas fa-radio mr-2"></i>
-              Explore Stations
-            </Button>
+            <Link href="/">
+              <Button
+                className="bg-bd-primary hover:bg-bd-primary/90 text-white"
+                data-testid="button-explore-stations"
+              >
+                <i className="fas fa-radio mr-2"></i>
+                Explore Stations
+              </Button>
+            </Link>
           </div>
         )}
       </section>

@@ -14,8 +14,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/bd" component={() => <Home defaultCountry="Bangladesh" />} />
-      <Route path="/in" component={() => <Home defaultCountry="India" />} />
+      <Route path="/country/:country" component={(params) => <Home defaultCountry={params.country} />} />
       <Route path="/favorites" component={Favorites} />
       <Route component={NotFound} />
     </Switch>
